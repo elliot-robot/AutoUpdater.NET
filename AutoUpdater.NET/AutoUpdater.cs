@@ -13,27 +13,6 @@ using Microsoft.Win32;
 namespace AutoUpdaterDotNET
 {
     /// <summary>
-    ///     Enum representing the remind later time span.
-    /// </summary>
-    public enum RemindLaterFormat
-    {
-        /// <summary>
-        ///     Represents the time span in minutes.
-        /// </summary>
-        Minutes,
-
-        /// <summary>
-        ///     Represents the time span in hours.
-        /// </summary>
-        Hours,
-
-        /// <summary>
-        ///     Represents the time span in days.
-        /// </summary>
-        Days
-    }
-
-    /// <summary>
     ///     Main class that lets you auto update applications by setting some static fields and executing its Start method.
     /// </summary>
     public static class AutoUpdater
@@ -71,7 +50,7 @@ namespace AutoUpdaterDotNET
         ///     Sets the current culture of the auto update notification window. Set this value if your application supports
         ///     functionalty to change the languge of the application.
         /// </summary>
-        public static CultureInfo CurrentCulture;
+        //public static CultureInfo CurrentCulture;
 
         /// <summary>
         ///     If this is true users can see the skip button.
@@ -126,26 +105,22 @@ namespace AutoUpdaterDotNET
         public static void Start(String appCast, Assembly myAssembly = null)
         {
             AppCastURL = appCast;
-
             IsWinFormsApplication = Application.MessageLoop;
 
             var backgroundWorker = new BackgroundWorker();
-
             backgroundWorker.DoWork += BackgroundWorkerDoWork;
-
             backgroundWorker.RunWorkerAsync(myAssembly ?? Assembly.GetEntryAssembly());
         }
 
         private static void BackgroundWorkerDoWork(object sender, DoWorkEventArgs e)
         {
             Assembly mainAssembly = e.Argument as Assembly;
-
-            var companyAttribute =
-                (AssemblyCompanyAttribute) GetAttribute(mainAssembly, typeof(AssemblyCompanyAttribute));
+            if(mainAssembly==null)
+                return;
+            var companyAttribute = (AssemblyCompanyAttribute) GetAttribute(mainAssembly, typeof(AssemblyCompanyAttribute));
             if (string.IsNullOrEmpty(AppTitle))
             {
-                var titleAttribute =
-                    (AssemblyTitleAttribute) GetAttribute(mainAssembly, typeof(AssemblyTitleAttribute));
+                var titleAttribute = (AssemblyTitleAttribute) GetAttribute(mainAssembly, typeof(AssemblyTitleAttribute));
                 AppTitle = titleAttribute != null ? titleAttribute.Title : mainAssembly.GetName().Name;
             }
 
@@ -161,7 +136,6 @@ namespace AutoUpdaterDotNET
             webRequest.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
 
             WebResponse webResponse;
-
             try
             {
                 webResponse = webRequest.GetResponse();
@@ -175,7 +149,6 @@ namespace AutoUpdaterDotNET
             Stream appCastStream = webResponse.GetResponseStream();
 
             var receivedAppCastDocument = new XmlDocument();
-
             if (appCastStream != null)
             {
                 receivedAppCastDocument.Load(appCastStream);
@@ -202,18 +175,15 @@ namespace AutoUpdaterDotNET
                             return;
                     }
                     else
+                    {
                         continue;
+                    }
 
                     XmlNode appCastChangeLog = item.SelectSingleNode("changelog");
-
-                    ChangeLogURL = GetURL(webResponse.ResponseUri, appCastChangeLog);
-
+                    ChangeLogURL = GetUrl(webResponse.ResponseUri, appCastChangeLog);
                     XmlNode appCastUrl = item.SelectSingleNode("url");
-
-                    DownloadURL = GetURL(webResponse.ResponseUri, appCastUrl);
-
+                    DownloadURL = GetUrl(webResponse.ResponseUri, appCastUrl);
                     XmlNode mandatory = item.SelectSingleNode("mandatory");
-
                     if (mandatory != null)
                     {
                         Mandatory = Boolean.Parse(mandatory.InnerText);
@@ -227,12 +197,10 @@ namespace AutoUpdaterDotNET
                     if (IntPtr.Size.Equals(8))
                     {
                         XmlNode appCastUrl64 = item.SelectSingleNode("url64");
-
-                        var downloadURL64 = GetURL(webResponse.ResponseUri, appCastUrl64);
-
-                        if (!string.IsNullOrEmpty(downloadURL64))
+                        var downloadUrl64 = GetUrl(webResponse.ResponseUri, appCastUrl64);
+                        if (!string.IsNullOrEmpty(downloadUrl64))
                         {
-                            DownloadURL = downloadURL64;
+                            DownloadURL = downloadUrl64;
                         }
                     }
                 }
@@ -299,7 +267,6 @@ namespace AutoUpdaterDotNET
                 if (CheckForUpdateEvent == null)
                 {
                     var thread = new Thread(ShowUI);
-                    thread.CurrentCulture = thread.CurrentUICulture = CurrentCulture ?? Application.CurrentCulture;
                     thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
                 }
@@ -308,14 +275,13 @@ namespace AutoUpdaterDotNET
             CheckForUpdateEvent?.Invoke(args);
         }
 
-        private static string GetURL(Uri baseUri, XmlNode xmlNode)
+        private static string GetUrl(Uri baseUri, XmlNode xmlNode)
         {
             var temp = xmlNode?.InnerText ?? "";
 
             if (!string.IsNullOrEmpty(temp) && Uri.IsWellFormedUriString(temp, UriKind.Relative))
             {
                 Uri uri = new Uri(baseUri, temp);
-
                 if (uri.IsAbsoluteUri)
                 {
                     temp = uri.AbsoluteUri;
@@ -328,7 +294,6 @@ namespace AutoUpdaterDotNET
         private static void ShowUI()
         {
             var updateForm = new UpdateForm();
-
             updateForm.ShowDialog();
         }
 
@@ -372,36 +337,5 @@ namespace AutoUpdaterDotNET
             {
             }
         }
-    }
-
-    /// <summary>
-    ///     Object of this class gives you all the details about the update useful in handling the update logic yourself.
-    /// </summary>
-    public class UpdateInfoEventArgs : EventArgs
-    {
-        /// <summary>
-        ///     If new update is available then returns true otherwise false.
-        /// </summary>
-        public bool IsUpdateAvailable { get; set; }
-
-        /// <summary>
-        ///     Download URL of the update file.
-        /// </summary>
-        public string DownloadURL { get; set; }
-
-        /// <summary>
-        ///     URL of the webpage specifying changes in the new update.
-        /// </summary>
-        public string ChangelogURL { get; set; }
-
-        /// <summary>
-        ///     Returns newest version of the application available to download.
-        /// </summary>
-        public Version CurrentVersion { get; set; }
-
-        /// <summary>
-        ///     Returns version of the application currently installed on the user's PC.
-        /// </summary>
-        public Version InstalledVersion { get; set; }
     }
 }

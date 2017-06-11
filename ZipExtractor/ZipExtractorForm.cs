@@ -9,16 +9,16 @@ using ZipExtractor.Properties;
 
 namespace ZipExtractor
 {
-    public partial class FormMain : Form
+    public partial class ZipExtractorForm : Form
     {
-        private BackgroundWorker _backgroundWorker;
+        private BackgroundWorker _BackgroundWorker;
 
-        public FormMain()
+        public ZipExtractorForm()
         {
             InitializeComponent();
         }
 
-        private void FormMain_Shown(object sender, EventArgs e)
+        private void ZipExtractorForm_Shown(object sender, EventArgs e)
         {
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length.Equals(3))
@@ -32,13 +32,13 @@ namespace ZipExtractor
                 }
 
                 // Extract all the files.
-                _backgroundWorker = new BackgroundWorker
+                _BackgroundWorker = new BackgroundWorker
                 {
                     WorkerReportsProgress = true,
                     WorkerSupportsCancellation = true
                 };
 
-                _backgroundWorker.DoWork += (o, eventArgs) =>
+                _BackgroundWorker.DoWork += (o, eventArgs) =>
                 {
                     var path = Path.GetDirectoryName(args[2]);
 
@@ -50,7 +50,7 @@ namespace ZipExtractor
 
                     for (var index = 0; index < dir.Count; index++)
                     {
-                        if (_backgroundWorker.CancellationPending)
+                        if (_BackgroundWorker.CancellationPending)
                         {
                             eventArgs.Cancel = true;
                             zip.Close();
@@ -58,19 +58,19 @@ namespace ZipExtractor
                         }
                         ZipStorer.ZipFileEntry entry = dir[index];
                         zip.ExtractFile(entry, Path.Combine(path, entry.FilenameInZip));
-                        _backgroundWorker.ReportProgress((index + 1) * 100 / dir.Count, string.Format(Resources.CurrentFileExtracting, entry.FilenameInZip));
+                        _BackgroundWorker.ReportProgress((index + 1) * 100 / dir.Count, string.Format(Resources.CurrentFileExtracting, entry.FilenameInZip));
                     }
 
                     zip.Close();
                 };
 
-                _backgroundWorker.ProgressChanged += (o, eventArgs) =>
+                _BackgroundWorker.ProgressChanged += (o, eventArgs) =>
                 {
                     progressBar.Value = eventArgs.ProgressPercentage;
                     labelInformation.Text = eventArgs.UserState.ToString();
                 };
 
-                _backgroundWorker.RunWorkerCompleted += (o, eventArgs) =>
+                _BackgroundWorker.RunWorkerCompleted += (o, eventArgs) =>
                 {
                     if (!eventArgs.Cancelled)
                     {
@@ -87,13 +87,13 @@ namespace ZipExtractor
                         Application.Exit();
                     }
                 };
-                _backgroundWorker.RunWorkerAsync();
+                _BackgroundWorker.RunWorkerAsync();
             }
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _backgroundWorker.CancelAsync();
+            _BackgroundWorker?.CancelAsync();
         }
     }
 }

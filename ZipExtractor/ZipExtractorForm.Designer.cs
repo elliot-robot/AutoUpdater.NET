@@ -1,6 +1,6 @@
 ﻿namespace ZipExtractor
 {
-    partial class FormMain
+    partial class ZipExtractorForm
     {
         /// <summary>
         /// Required designer variable.
@@ -36,9 +36,11 @@
             // 
             // progressBar
             // 
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.Location = new System.Drawing.Point(86, 53);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(446, 23);
+            this.progressBar.Size = new System.Drawing.Size(446, 22);
             this.progressBar.TabIndex = 0;
             // 
             // pictureBoxIcon
@@ -54,28 +56,29 @@
             // labelInformation
             // 
             this.labelInformation.AutoSize = true;
-            this.labelInformation.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-            this.labelInformation.Location = new System.Drawing.Point(82, 12);
+            this.labelInformation.Location = new System.Drawing.Point(83, 12);
             this.labelInformation.Name = "labelInformation";
-            this.labelInformation.Size = new System.Drawing.Size(78, 19);
+            this.labelInformation.Size = new System.Drawing.Size(79, 13);
             this.labelInformation.TabIndex = 3;
-            this.labelInformation.Text = "Extracting...";
+            this.labelInformation.Text = "解压升级包...";
             // 
-            // FormMain
+            // ZipExtractorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(544, 88);
+            this.ClientSize = new System.Drawing.Size(544, 87);
             this.Controls.Add(this.labelInformation);
             this.Controls.Add(this.pictureBoxIcon);
             this.Controls.Add(this.progressBar);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Font = new System.Drawing.Font("Tahoma", 8.25F);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormMain";
-            this.Text = "Installing update...";
+            this.Name = "ZipExtractorForm";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.Text = "安装升级包...";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
-            this.Shown += new System.EventHandler(this.FormMain_Shown);
+            this.Shown += new System.EventHandler(this.ZipExtractorForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

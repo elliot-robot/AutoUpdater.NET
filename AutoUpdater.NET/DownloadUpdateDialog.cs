@@ -11,32 +11,29 @@ namespace AutoUpdaterDotNET
 {
     internal partial class DownloadUpdateDialog : Form
     {
-        private readonly string _downloadURL;
+        private readonly string _DownloadUrl;
 
-        private string _tempPath;
+        private string _TempPath;
 
-        private WebClient _webClient;
+        private WebClient _WebClient;
 
-        public DownloadUpdateDialog(string downloadURL)
+        public DownloadUpdateDialog(string downloadUrl)
         {
             InitializeComponent();
-
-            _downloadURL = downloadURL;
+            _DownloadUrl = downloadUrl;
         }
 
         private void DownloadUpdateDialogLoad(object sender, EventArgs e)
         {
-            _webClient = new WebClient();
+            _WebClient = new WebClient();
 
-            var uri = new Uri(_downloadURL);
+            var uri = new Uri(_DownloadUrl);
 
-            _tempPath = Path.Combine(Path.GetTempPath(), GetFileName(_downloadURL));
+            _TempPath = Path.Combine(Path.GetTempPath(), GetFileName(_DownloadUrl));
 
-            _webClient.DownloadProgressChanged += OnDownloadProgressChanged;
-
-            _webClient.DownloadFileCompleted += OnDownloadComplete;
-
-            _webClient.DownloadFileAsync(uri, _tempPath);
+            _WebClient.DownloadProgressChanged += OnDownloadProgressChanged;
+            _WebClient.DownloadFileCompleted += OnDownloadComplete;
+            _WebClient.DownloadFileAsync(uri, _TempPath);
         }
 
         private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -48,8 +45,8 @@ namespace AutoUpdaterDotNET
         {
             if (!e.Cancelled)
             {
-                var processStartInfo = new ProcessStartInfo {FileName = _tempPath, UseShellExecute = true};
-                var extension = Path.GetExtension(_tempPath);
+                var processStartInfo = new ProcessStartInfo {FileName = _TempPath, UseShellExecute = true};
+                var extension = Path.GetExtension(_TempPath);
                 if (extension != null && extension.ToLower().Equals(".zip"))
                 {
                     string installerPath = Path.Combine(Path.GetTempPath(), "ZipExtractor.exe");
@@ -58,7 +55,7 @@ namespace AutoUpdaterDotNET
                     {
                         UseShellExecute = true,
                         FileName = installerPath,
-                        Arguments = $"\"{_tempPath}\" \"{Assembly.GetEntryAssembly().Location}\""
+                        Arguments = $"\"{_TempPath}\" \"{Assembly.GetEntryAssembly().Location}\""
                     };
                 }
                 try
@@ -118,10 +115,10 @@ namespace AutoUpdaterDotNET
                     var contentDisposition = httpWebResponse.Headers["content-disposition"];
                     if (!string.IsNullOrEmpty(contentDisposition))
                     {
-                        const string lookForFileName = "filename=";
-                        var index = contentDisposition.IndexOf(lookForFileName, StringComparison.CurrentCultureIgnoreCase);
+                        const string LOOK_FOR_FILE_NAME = "filename=";
+                        var index = contentDisposition.IndexOf(LOOK_FOR_FILE_NAME, StringComparison.CurrentCultureIgnoreCase);
                         if (index >= 0)
-                            fileName = contentDisposition.Substring(index + lookForFileName.Length);
+                            fileName = contentDisposition.Substring(index + LOOK_FOR_FILE_NAME.Length);
                         if (fileName.StartsWith("\"") && fileName.EndsWith("\""))
                         {
                             fileName = fileName.Substring(1, fileName.Length - 2);
@@ -142,7 +139,7 @@ namespace AutoUpdaterDotNET
 
         private void DownloadUpdateDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _webClient.CancelAsync();
+            _WebClient.CancelAsync();
         }
     }
 }

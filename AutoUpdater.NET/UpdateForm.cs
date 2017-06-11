@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -14,16 +15,12 @@ namespace AutoUpdaterDotNET
         public UpdateForm()
         {
             InitializeComponent();
+
             buttonSkip.Visible = AutoUpdater.ShowSkipButton;
             buttonRemindLater.Visible = AutoUpdater.ShowRemindLaterButton;
-            var resources = new System.ComponentModel.ComponentResourceManager(typeof(UpdateForm));
-            Text = string.Format(resources.GetString("$this.Text", CultureInfo.CurrentCulture),
-                AutoUpdater.AppTitle, AutoUpdater.CurrentVersion);
-            labelUpdate.Text = string.Format(resources.GetString("labelUpdate.Text", CultureInfo.CurrentCulture),
-                AutoUpdater.AppTitle);
-            labelDescription.Text =
-                string.Format(resources.GetString("labelDescription.Text", CultureInfo.CurrentCulture),
-                    AutoUpdater.AppTitle, AutoUpdater.CurrentVersion, AutoUpdater.InstalledVersion);
+            Text = string.Format(Text, AutoUpdater.AppTitle, AutoUpdater.CurrentVersion);
+            labelUpdate.Text = string.Format(labelUpdate.Text, AutoUpdater.AppTitle);
+            labelDescription.Text = string.Format(labelDescription.Text, AutoUpdater.AppTitle, AutoUpdater.CurrentVersion, AutoUpdater.InstalledVersion);
             if (string.IsNullOrEmpty(AutoUpdater.ChangeLogURL))
             {
                 HideReleaseNotes = true;
@@ -34,8 +31,7 @@ namespace AutoUpdaterDotNET
                 Height -= reduceHeight;
 
                 buttonSkip.Location = new Point(buttonSkip.Location.X, buttonSkip.Location.Y - reduceHeight);
-                buttonRemindLater.Location = new Point(buttonRemindLater.Location.X,
-                    buttonRemindLater.Location.Y - reduceHeight);
+                buttonRemindLater.Location = new Point(buttonRemindLater.Location.X, buttonRemindLater.Location.Y - reduceHeight);
                 buttonUpdate.Location = new Point(buttonUpdate.Location.X, buttonUpdate.Location.Y - reduceHeight);
             }
         }
@@ -59,7 +55,6 @@ namespace AutoUpdaterDotNET
             if (AutoUpdater.OpenDownloadPage)
             {
                 var processStartInfo = new ProcessStartInfo(AutoUpdater.DownloadURL);
-
                 Process.Start(processStartInfo);
             }
             else
@@ -84,9 +79,7 @@ namespace AutoUpdaterDotNET
             if (AutoUpdater.LetUserSelectRemindLater)
             {
                 var remindLaterForm = new RemindLaterForm();
-
                 var dialogResult = remindLaterForm.ShowDialog();
-
                 if (dialogResult.Equals(DialogResult.OK))
                 {
                     AutoUpdater.RemindLaterTimeSpan = remindLaterForm.RemindLaterFormat;
@@ -123,8 +116,7 @@ namespace AutoUpdaterDotNET
                         break;
 
                 }
-                updateKey.SetValue("remindlater",
-                    remindLaterDateTime.ToString(CultureInfo.CreateSpecificCulture("en-US")));
+                updateKey.SetValue("remindlater", remindLaterDateTime.ToString(CultureInfo.CreateSpecificCulture("en-US")));
                 AutoUpdater.SetTimer(remindLaterDateTime);
                 updateKey.Close();
             }
