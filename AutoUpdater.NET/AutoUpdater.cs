@@ -44,7 +44,7 @@ namespace AutoUpdaterDotNET
         /// <summary>
         ///     Opens the download url in default browser if true. Very usefull if you have portable application.
         /// </summary>
-        public static bool OpenDownloadPage;
+        public static bool OpenDownloadPage { get; set; }
 
         /// <summary>
         ///     Sets the current culture of the auto update notification window. Set this value if your application supports
