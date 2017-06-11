@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ZipExtractor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("RBSoft")]
+[assembly: AssemblyCompany("RBSoft and xknife.net")]
 [assembly: AssemblyProduct("ZipExtractor")]
-[assembly: AssemblyCopyright("Copyright © 2012-2017 RBSoft")]
+[assembly: AssemblyCopyright("Copyright © 2012-2017 RBSoft and xknife.net")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

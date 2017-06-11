@@ -8,9 +8,9 @@ using System.Resources;
 [assembly: AssemblyTitle("AutoUpdater.NET")]
 [assembly: AssemblyDescription("AutoUpdater.NET is a class library that allows .NET developers to easily add auto update functionality to their classic desktop application projects.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("RBSoft")]
+[assembly: AssemblyCompany("RBSoft and xknife.net")]
 [assembly: AssemblyProduct("AutoUpdater.NET")]
-[assembly: AssemblyCopyright("Copyright © 2012-2017 RBSoft")]
+[assembly: AssemblyCopyright("Copyright © 2012-2017 RBSoft and xknife.net")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
